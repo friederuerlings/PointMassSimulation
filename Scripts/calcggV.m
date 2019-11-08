@@ -5,17 +5,31 @@ ggVLookUp_neg = [];
 vRLookUp = [];
 temp = [];
 
+%Initialisierung um max Beschleunigung zu ermitteln
+%für obere Interpolationsgrenze
+ggV_simu_stopTime = 0;
+ggV_simu_stepSize = 1;
+ggV_v = maxV;
+
 load_system ('ggV_simu')
 
+ggVsim = sim('ggV_simu');
+interpMax = ceil(ggVsim.a_x_neg) * -1;
+
+%Initialisierung für ggV Simulation
+ggV_simu_stopTime = pi/2;
+ggV_simu_stepSize = (pi/2)/10;
 
     for ggV_v = 0:deltaV:maxV
         ggVsim = sim('ggV_simu');
-        ggVLookUp_pos = horzcat(ggVLookUp_pos, interp1(ggVsim.a_y,ggVsim.a_x_pos,[0:1:30]'));
-        ggVLookUp_neg = horzcat(ggVLookUp_neg, interp1(ggVsim.a_y,ggVsim.a_x_neg,[0:1:30]'));
+        ggVLookUp_pos = horzcat(ggVLookUp_pos, interp1(ggVsim.a_y,ggVsim.a_x_pos,[0:1:interpMax]'));
+        ggVLookUp_neg = horzcat(ggVLookUp_neg, interp1(ggVsim.a_y,ggVsim.a_x_neg,[0:1:interpMax]'));
         ggVData_pos = vertcat(ggVData_pos, [ggVsim.a_x_pos, ggVsim.a_y, ggVsim.velocity]);
         ggVData_neg = vertcat(ggVData_neg, [ggVsim.a_x_neg ggVsim.a_y ggVsim.velocity]);
         vRLookUp = [vRLookUp; ggVsim.maxRadiusForVelocity(1:1)];
     end
+    
+vRLookUp = [vRLookUp, [0:deltaV:maxV]'];
 
 figure(5)
 plot3(ggVData_pos(:,1),ggVData_pos(:,2),ggVData_pos(:,3),'*')
@@ -28,6 +42,3 @@ xlabel('a_x [m/s²]')
 ylabel('a_y [m/s²]')
 zlabel('velocity [m/s]')
 
-figure (6)
-plot(0:10:110,vRLookUp')
-grid

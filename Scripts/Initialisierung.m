@@ -14,7 +14,7 @@ P_engine = 45; % in kW
 
 %Simulation
 deltaV   = 10;
-maxV     = 110;
+maxV     = 120;
 
 
 

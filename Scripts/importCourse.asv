@@ -10,8 +10,7 @@ course = readtable("C:\Users\Frieder Uerlings\Desktop\PointMassSimulation\Kurs\f
 course = table2array(course);
 clear opts
 
-%Sortiert die Punkte aus der Bohrtabelle
 [course,distance,TrackLength] = sortingPoints(course);
-
+course = addRadius(course);
 
 

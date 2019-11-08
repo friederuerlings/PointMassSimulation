@@ -20,6 +20,8 @@ interpMax = ceil(ggVsim.a_x_neg) * -1;
 ggV_simu_stopTime = pi/2;
 ggV_simu_stepSize = (pi/2)/10;
 
+%Erstellt das ggV Diagramm
+%Erstellt die Look Up Tables für a_x, a_y bei jeweiliger Geschwindigkeit
     for ggV_v = 0:deltaV:maxV
         ggVsim = sim('ggV_simu');
         ggVLookUp_pos = horzcat(ggVLookUp_pos, interp1(ggVsim.a_y,ggVsim.a_x_pos,[0:1:interpMax]'));
@@ -29,8 +31,16 @@ ggV_simu_stepSize = (pi/2)/10;
         vRLookUp = [vRLookUp; ggVsim.maxRadiusForVelocity(1:1)];
     end
     
+%Erstellt LookUp für velocity und radius
+%Benötigt um maximale Geschwindigkeit am Apex zu ermitteln
 vRLookUp = [vRLookUp, [0:deltaV:maxV]'];
 
+%Fügt dem Kurs den Radius zu jedem Punkt hinzu
+%Alles über minimalem Radius bei vmax wird zu minimalem Radius bei vmax
+course = addRadius(course,max(vRLookUp(:,1)));
+
+
+%Plottet das ggV-Diagramm
 figure(5)
 plot3(ggVData_pos(:,1),ggVData_pos(:,2),ggVData_pos(:,3),'*')
 hold on

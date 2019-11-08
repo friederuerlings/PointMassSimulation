@@ -1,15 +1,17 @@
-function  [xyrad] = addRadius(input)
+function  [xyrad] = addRadius(input,maxR)
 
 %Input ist x und y Coordinaten des Tracks
 %Fügt Kurvenradien als 3. Spaltenvektor hinzu
 
 %input(:,1) = input(:,1).*(-1);
 input(:,3) = 0;
-distance = 0;
 xyrad = input;
 
 for n = 2:1:length(input)-1
     rad = calcRadius(input(n-1,:),input(n,:),input(n+1,:));
+    if rad > maxR 
+        rad = maxR;
+    end
     xyrad(n,3) = rad;        
 end
 

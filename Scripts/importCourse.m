@@ -19,7 +19,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-course = readtable("C:\Users\Frieder Uerlings\Desktop\20191106_LapTime\Kurs\fsg_track_1m.csv.1", opts);
+course = readtable("C:\Users\Frieder Uerlings\Desktop\PointMassSimulation\Kurs\fsg_track_1m.csv.1", opts);
 
 %% Convert to output type
 course = table2array(course);

@@ -1,20 +1,20 @@
 %Gesamtfahrzeug
-m       = 220;
-ae_A    = 1.2;
+init.m        = 220;
+init.ae_A     = 1.2;
 
 %Aerodynamics
-c_L     = 2.85;
-c_D     = 1.3;
+init.c_L      = 2.85;
+init.c_D      = 1.3;
 
 %Suspension
-my      = 1.3;
+init.my       = 1.3;
 
 %Powertrain
-P_engine = 45; % in kW
+init.P_engine = 45; % in kW
 
 %Simulation
-deltaV   = 10;
-maxV     = 120;
+init.deltaV   = 3;
+init.maxV     = 30;
 
 
 

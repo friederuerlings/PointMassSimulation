@@ -1,4 +1,4 @@
-function [apexData, segments] = maxVelocityatApex(course, vRLookUp)
+%function [apexData, segments] = maxVelocityatApex(course, vRLookUp)
 
 [apexData.radius, apexData.locs] = findpeaks(course(:,3)*-1);
 apexData.radius = apexData.radius * -1;

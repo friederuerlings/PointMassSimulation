@@ -1,4 +1,4 @@
-function [radius] = calcRadius(pt1,pt2,pt3,maxR)
+function [radius] = calcRadius(pt1,pt2,pt3)
 
 warning off MATLAB:nearlySingularMatrix
 

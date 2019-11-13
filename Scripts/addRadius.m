@@ -9,8 +9,8 @@ xyrad = input;
 
 for n = 2:1:length(input)-1
     rad = calcRadius(input(n-1,:),input(n,:),input(n+1,:));
-    if rad > maxR 
-        rad = maxR;
+    if rad > 100 
+        rad = 100;
     end
     xyrad(n,3) = rad;        
 end

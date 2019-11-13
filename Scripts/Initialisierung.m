@@ -13,7 +13,7 @@ init.my       = 1.3;
 init.P_engine = 45; % in kW
 
 %Simulation
-init.deltaV   = 3;
+init.deltaV   = 1;
 init.maxV     = 30;
 
 

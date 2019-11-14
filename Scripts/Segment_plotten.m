@@ -22,7 +22,7 @@ neg = sim('segmentCalcNeg');
 % hold off
 
 figure(5)
-line((length(segments{1,3})-1)-neg.distance, neg.velocity)
+line((length(segments{1,5})-1)-neg.distance, neg.velocity)
 hold on
 line(pos.distance, pos.velocity)
 grid

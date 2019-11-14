@@ -1,3 +1,5 @@
+currentSegment = 3;
+
 pos = sim('segmentCalcPos');
 neg = sim('segmentCalcNeg');
 
@@ -21,8 +23,8 @@ neg = sim('segmentCalcNeg');
 % legend('velocity','acceleration')
 % hold off
 
-figure(5)
-line((length(segments{1,5})-1)-neg.distance, neg.velocity)
+figure
+line((length(segments{1,currentSegment})-1)-neg.distance, neg.velocity)
 hold on
 line(pos.distance, pos.velocity)
 grid

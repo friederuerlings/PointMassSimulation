@@ -4,6 +4,7 @@ function [apexData, segments] = maxVelocityatApex(course, vRLookUp)
 apexData.radius = apexData.radius * -1;
 
 apexData.velocity = interp1(vRLookUp(:,1),vRLookUp(:,2),apexData.radius);
+apexData.velocity(isnan(apexData.velocity)) = evalin('base', 'init.maxV');
 
 %Segements enthält die Radien der Segmente
 for n = 1:(size(apexData.locs)-1)

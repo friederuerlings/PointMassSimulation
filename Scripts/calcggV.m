@@ -50,10 +50,6 @@ course = addRadius(course);
 %apexData enthält die Position und maximale Geschwindigkeit an allen Apex
 [apexData, segments] = maxVelocityatApex(course, vRLookUp);
 
-%Look Up für Velocity over Distance
-%vDLookUp = segments{1,1}.*
-
-
 %Plottet das ggV-Diagramm
 figure
 plot3(ggV.Data_pos(:,1),ggV.Data_pos(:,2),ggV.Data_pos(:,3)*3.6,'*')

@@ -14,7 +14,6 @@ init.P_engine     = 45; % in kW
 
 %Simulation
 init.deltaV       = 5;
-% init.maxV         = 30;
 init.ptDistance   = 1; %in Meter
 
 

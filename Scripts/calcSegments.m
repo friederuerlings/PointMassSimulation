@@ -1,3 +1,5 @@
+clear segmentData
+
 %Apex Velocity Backup 
 apexData.velocity(:,2) = apexData.velocity(:,1);
 
@@ -52,15 +54,34 @@ end
 clear currentDistance apexVelocity stoppingDistance n 
 clear flippedCourse flippedLocs flippedVel
 
-% Plot Segments 
-for n = 7:1:10
-    
-    figure
-    plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
-    hold on
-    grid
-    %     plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
-    plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
-    %     plot(segmentData{n,1}.distance, segmentData{n,1}.a_x)
-    
-end
+%% Plot Segments
+
+% for n = 7:1:10
+%     
+%     figure
+%     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
+%     hold on
+%     grid
+%     %     plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
+%     plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
+%     %     plot(segmentData{n,1}.distance, segmentData{n,1}.a_x)
+%     
+% end
+
+%% temp section
+
+
+% for n = 1:1:length(apexData.locs)-1
+%     
+%     if min(segmentData{n,1}.velocity) < max(segmentData{n,2}.velocity) && max(segmentData{n,1}.velocity) > min(segmentData{n,2}.velocity)
+%         figure(n)
+%         plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
+%         hold on
+%         grid
+%         %     plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
+%         plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
+%         %     plot(segmentData{n,1}.distance, segmentData{n,1}.a_x)
+%     end
+% end
+
+

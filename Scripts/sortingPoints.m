@@ -26,9 +26,5 @@ courseSorted(1,3) = pdist2(courseSorted(1,1:2),courseSorted(length(courseSorted)
 
 %Tracklength berechnen
 
-TrackLength = 0;
-
-for i = 1:1:length(courseSorted)
-   TrackLength = TrackLength + round(courseSorted(i,3)); 
-   distance(i,1) = TrackLength + round(courseSorted(i,3));
-end
+TrackLength = (length(courseSorted)-1) * evalin('base', 'init.ptDistance');
+distance = [0:evalin('base', 'init.ptDistance'):length(courseSorted)-1]';

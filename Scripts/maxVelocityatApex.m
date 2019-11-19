@@ -13,3 +13,9 @@ for n = 1:(size(apexData.locs)-1)
     
 end
 
+for n = 1:length(apexData.locs)
+    apexData.xy(n,:) = course(apexData.locs(n),:);
+end
+
+
+

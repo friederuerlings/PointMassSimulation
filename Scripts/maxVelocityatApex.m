@@ -6,6 +6,13 @@ apexData.radius = apexData.radius * -1;
 apexData.velocity = interp1(vRLookUp(:,1),vRLookUp(:,2),apexData.radius);
 apexData.velocity(isnan(apexData.velocity)) = evalin('base', 'init.maxV');
 
+for n = 1:length(apexData.locs)
+    apexData.xy(n,:) = course(apexData.locs(n),:);
+end
+
+%filtert apexData, entfernt alle apex mit v > vmax
+[apexData] = filterCourse(apexData);
+
 %Segements enthält die Radien der Segmente
 for n = 1:(size(apexData.locs)-1)
     
@@ -13,9 +20,7 @@ for n = 1:(size(apexData.locs)-1)
     
 end
 
-for n = 1:length(apexData.locs)
-    apexData.xy(n,:) = course(apexData.locs(n),:);
-end
+
 
 
 

@@ -1,4 +1,5 @@
 clear segmentData
+Bremspunkt = [];
 
 %Apex Velocity Backup 
 apexData.velocity(:,2) = apexData.velocity(:,1);
@@ -30,6 +31,11 @@ for n = 1:1:length(flippedLocs)-1
     segmentData{length(apexData.locs)-n,1}.velocity = flip(segmentData{length(apexData.locs)-n,1}.velocity);
     segmentData{length(apexData.locs)-n,1}.a_x = flip(segmentData{length(apexData.locs)-n,1}.a_x);
     
+    %Polynom anlegen
+    segmentData{length(apexData.locs)-n,1}.vPoly = polyfit(segmentData{length(apexData.locs)-n,1}.distance, segmentData{length(apexData.locs)-n,1}.velocity, 9);
+    segmentData{length(apexData.locs)-n,1}.vPoly = polyval(segmentData{length(apexData.locs)-n,1}.vPoly, segmentData{length(apexData.locs)-n,1}.distance);
+    
+    
 end
 
 % Apex Velocity anpassen für den Fall, dass Bremspunkt vor Apex liegt
@@ -47,6 +53,12 @@ for n = 1:1:length(apexData.locs)-1
     set_param('segmentCalcPos','FastRestart','on')
     segmentData{n,2} = sim('segmentCalcPos');
     
+    %Polynom anlegen
+    segmentData{n,2}.vPoly = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 9);
+    segmentData{n,2}.vPoly = polyval(segmentData{n,2}.vPoly, segmentData{n,2}.distance);
+    
+    Bremspunkt = round(vertcat(Bremspunkt, polyxpoly(segmentData{n,1}.distance, segmentData{n,1}.velocity, segmentData{n,2}.distance, segmentData{n,2}.velocity)));
+    
     if max(segmentData{n,2}.velocity) < apexData.velocity(n+1,2)
         apexData.velocity(n+1,2) = max(segmentData{n,2}.velocity);
     end
@@ -58,7 +70,7 @@ clear flippedCourse flippedLocs flippedVel
 
 %% Plot Segments
 
-for n = 48:1:50
+for n = 1:1:10
     
     figure(n)
     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
@@ -69,13 +81,13 @@ for n = 48:1:50
     %     plot(segmentData{n,1}.distance, segmentData{n,1}.a_x)
     
     
-    polynom_accel = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 4);
+    polynom_accel = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 9);
     polynom_accel = polyval(polynom_accel, segmentData{n,2}.distance);
-    plot(segmentData{n,2}.distance, polynom_accel)
+    plot(segmentData{n,2}.distance, polynom_accel, 'LineWidth', 2)
     
-    polynom_brake = polyfit(segmentData{n,1}.distance, segmentData{n,1}.velocity, 4);
+    polynom_brake = polyfit(segmentData{n,1}.distance, segmentData{n,1}.velocity, 9);
     polynom_brake = polyval(polynom_brake, segmentData{n,1}.distance);
-    plot(segmentData{n,1}.distance, polynom_brake)
+    plot(segmentData{n,1}.distance, polynom_brake, 'LineWidth', 2)
     
 end
 
@@ -91,9 +103,9 @@ end
 % polynom_accel = polyval(polynom_accel, segmentData{49,2}.distance);
 % plot(segmentData{49,2}.distance,polynom_accel)
 
-polynom_accel = polyfit(segmentData{49,2}.distance, segmentData{49,2}.velocity, 5);
-polynom_accel = polyval(polynom_accel, segmentData{49,2}.distance);
-plot(segmentData{49,2}.distance, polynom_accel)
+% polynom_accel = polyfit(segmentData{49,2}.distance, segmentData{49,2}.velocity, 5);
+% polynom_accel = polyval(polynom_accel, segmentData{49,2}.distance);
+% plot(segmentData{49,2}.distance, polynom_accel)
 
 
 

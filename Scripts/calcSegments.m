@@ -1,5 +1,7 @@
 clear segmentData
-Bremspunkt = [];
+warning off MATLAB:polyfit:RepeatedPointsOrRescale
+breakPt = [];
+
 
 %Apex Velocity Backup 
 apexData.velocity(:,2) = apexData.velocity(:,1);
@@ -32,8 +34,8 @@ for n = 1:1:length(flippedLocs)-1
     segmentData{length(apexData.locs)-n,1}.a_x = flip(segmentData{length(apexData.locs)-n,1}.a_x);
     
     %Polynom anlegen
-    segmentData{length(apexData.locs)-n,1}.vPoly = polyfit(segmentData{length(apexData.locs)-n,1}.distance, segmentData{length(apexData.locs)-n,1}.velocity, 9);
-    segmentData{length(apexData.locs)-n,1}.vPoly = polyval(segmentData{length(apexData.locs)-n,1}.vPoly, segmentData{length(apexData.locs)-n,1}.distance);
+    segmentData{length(apexData.locs)-n,1}.vPolyFit = polyfit(segmentData{length(apexData.locs)-n,1}.distance, segmentData{length(apexData.locs)-n,1}.velocity, 9);
+    segmentData{length(apexData.locs)-n,1}.vPolyVal = polyval(segmentData{length(apexData.locs)-n,1}.vPolyFit, segmentData{length(apexData.locs)-n,1}.distance);
     
     
 end
@@ -54,10 +56,11 @@ for n = 1:1:length(apexData.locs)-1
     segmentData{n,2} = sim('segmentCalcPos');
     
     %Polynom anlegen
-    segmentData{n,2}.vPoly = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 9);
-    segmentData{n,2}.vPoly = polyval(segmentData{n,2}.vPoly, segmentData{n,2}.distance);
+    segmentData{n,2}.vPolyFit = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 9);
+    segmentData{n,2}.vPolyVal = polyval(segmentData{n,2}.vPolyFit, segmentData{n,2}.distance);
     
-    Bremspunkt = round(vertcat(Bremspunkt, polyxpoly(segmentData{n,1}.distance, segmentData{n,1}.velocity, segmentData{n,2}.distance, segmentData{n,2}.velocity)));
+    %     Bremspunkt = round(vertcat(Bremspunkt, polyxpoly(segmentData{n,1}.distance, segmentData{n,1}.velocity, segmentData{n,2}.distance, segmentData{n,2}.velocity)));
+    
     
     if max(segmentData{n,2}.velocity) < apexData.velocity(n+1,2)
         apexData.velocity(n+1,2) = max(segmentData{n,2}.velocity);
@@ -70,7 +73,9 @@ clear flippedCourse flippedLocs flippedVel
 
 %% Plot Segments
 
-for n = 1:1:10
+breakPt = [];
+
+for n = 3:1:3
     
     figure(n)
     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
@@ -80,16 +85,18 @@ for n = 1:1:10
     plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
     %     plot(segmentData{n,1}.distance, segmentData{n,1}.a_x)
     
+    plot(segmentData{n,2}.distance, segmentData{n,2}.vPolyVal, 'LineWidth', 2)
+    plot(segmentData{n,1}.distance, segmentData{n,1}.vPolyVal, 'LineWidth', 2)
     
-    polynom_accel = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 9);
-    polynom_accel = polyval(polynom_accel, segmentData{n,2}.distance);
-    plot(segmentData{n,2}.distance, polynom_accel, 'LineWidth', 2)
-    
-    polynom_brake = polyfit(segmentData{n,1}.distance, segmentData{n,1}.velocity, 9);
-    polynom_brake = polyval(polynom_brake, segmentData{n,1}.distance);
-    plot(segmentData{n,1}.distance, polynom_brake, 'LineWidth', 2)
+    breakPtFit = segmentData{n,2}.vPolyFit - segmentData{n,1}.vPolyFit;
+    breakPt = vertcat(breakPt, roots(breakPtFit));
+    logicMat = angle(breakPt) == 0 & breakPt < max(segmentData{n,2}.distance) & breakPt > min(segmentData{n,2}.distance);
+   
+    breakPt = breakPt(logicMat);
     
 end
+
+clear breakPtFit logicMat
 
 %% temp section
 

@@ -1,4 +1,4 @@
-function [segmentDataClear] = clearDouble(segmentData)
+function [segmentData] = clearDouble(segmentData)
 
 % entfernt alle doppelten Werte aus den Vektoren
 % mit doppelten x Werten kann nicht interpoliert werden
@@ -19,7 +19,7 @@ end
 
 logicDiff = logical(logicDiff);
 
-segmentDataClear.tout = segmentData.tout(logicDiff);
-segmentDataClear.velocity = segmentData.velocity(logicDiff);
-segmentDataClear.distance = segmentData.distance(logicDiff);
-segmentDataClear.a_x = segmentData.a_x(logicDiff);
+segmentData.tout = segmentData.tout(logicDiff);
+segmentData.velocity = segmentData.velocity(logicDiff);
+segmentData.distance = segmentData.distance(logicDiff);
+segmentData.a_x = segmentData.a_x(logicDiff);

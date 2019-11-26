@@ -1,5 +1,5 @@
 %Gesamtfahrzeug
-init.m            = 220;
+init.m            = 270;
 init.ae_A         = 1.2;
 
 %Aerodynamics

@@ -1,7 +1,7 @@
 clear apexData ggV interpVel resultData segmentData segments vRLookUp
 
 %Gesamtfahrzeug
-init.m            = 250;
+init.m            = 240;
 init.ae_A         = 1.2;
 
 %Aerodynamics
@@ -17,6 +17,13 @@ init.P_engine     = 40; % in kW
 %Simulation
 init.deltaV       = 5;
 init.ptDistance   = 1; %in Meter
+init.deltaS       = 0.1; % in Meter
+
+%% Lap Time Simulation durchführen
+
+calcggV
+calcSegments
+
 
 
 

@@ -1,4 +1,4 @@
-function [resultData] = evaluateSegment(resultData, segmentData_accel, segmentData_brake, brakePt)
+function [resultData] = evaluateSegment(resultData, segmentData_accel, segmentData_brake)
 %% Segment in dem nur gebremst wird
 % Übernimmt das Segment vom Bremsvorgang
 
@@ -6,6 +6,10 @@ if segmentData_brake.velocity(1) <= segmentData_accel.velocity(1)
     resultData.velocity = vertcat(resultData.velocity, segmentData_brake.velocity);
     resultData.distance = vertcat(resultData.distance, segmentData_brake.distance);
     resultData.tout = resultData.tout + max(segmentData_brake.tout);
+    
+    resultData.velocity(end) = [];
+    resultData.distance(end) = [];
+    
     return
 end
 
@@ -16,44 +20,34 @@ if max(segmentData_accel.velocity) <= min(segmentData_brake.velocity)
     resultData.velocity = vertcat(resultData.velocity, segmentData_accel.velocity);
     resultData.distance = vertcat(resultData.distance, segmentData_accel.distance);
     resultData.tout = resultData.tout + max(segmentData_accel.tout);
+    
+    resultData.velocity(end) = [];
+    resultData.distance(end) = [];
+ 
     return
 end
 
 %% Segment mit Bremspunkt
 % Erzeugt einen Vektor mit interpolierten Werten von apex1 zu Bremspunkt
 % und von Bremspunkt zu apex2
+    
+brakePt = intersection(segmentData_accel.distance, segmentData_accel.velocity, ...
+    segmentData_brake.distance, segmentData_brake.velocity);
 
-if isempty(brakePt) == 0
-    
-    %     Falls Breakpoint direkt auf apex2 liegt
-    if brakePt >= segmentData_accel.distance(end)
-        resultData.velocity = vertcat(resultData.velocity, segmentData_accel.velocity);
-        resultData.distance = vertcat(resultData.distance, segmentData_accel.distance);
-        resultData.tout = resultData.tout + max(segmentData_accel.tout);
-        return
-    end
-    
-    %     Falls Breakpoint direkt auf apex1 liegt
-    if brakePt <= segmentData_brake.distance(1) 
-        resultData.velocity = vertcat(resultData.velocity, segmentData_brake.velocity);
-        resultData.distance = vertcat(resultData.distance, segmentData_brake.distance);
-        resultData.tout = resultData.tout + max(segmentData_brake.tout);
-        return
-    end
-    
-    AccelInterpVel = (interp1(segmentData_accel.distance, segmentData_accel.velocity, [segmentData_accel.distance(1):0.1:brakePt]))';
-    AccelInterpT = (interp1(segmentData_accel.distance, segmentData_accel.tout, [segmentData_accel.distance(1):0.1:brakePt]))';
-    
-    BrakeInterpVel = (interp1(segmentData_brake.distance, segmentData_brake.velocity, [brakePt:0.1:segmentData_brake.distance(end)]))';
-    BrakeInterpT = (interp1(segmentData_brake.distance, segmentData_brake.tout, [brakePt:0.1:segmentData_brake.distance(end)]))';
-    
-    resultData.velocity = vertcat(resultData.velocity, AccelInterpVel, BrakeInterpVel);
-    resultData.distance = vertcat(resultData.distance, [segmentData_accel.distance(1):0.1:brakePt]', [brakePt:0.1:segmentData_brake.distance(end)]');
-    resultData.tout = resultData.tout + (max(AccelInterpT) + max(BrakeInterpT));
-    return
-end
+% Rundet Brake Point auf die initialisierte Schrittweite
+brakePt = round(brakePt*(1/evalin('base', 'init.deltaS')))/(1/evalin('base', 'init.deltaS'));
 
-error('no case')
+% Interpoliert Accel-Vektoren von Apex1 zu Brake Point und Brake-Vektoren von Brake Point zu
+% Apex2
+logicAccel = segmentData_accel.distance < brakePt;
+logicBrake = segmentData_brake.distance >= brakePt;
+
+resultData.velocity = vertcat(resultData.velocity, segmentData_accel.velocity(logicAccel), segmentData_brake.velocity(logicBrake));
+resultData.tout = resultData.tout + max(segmentData_accel.tout(logicAccel)) + max(segmentData_brake.tout(logicBrake));
+resultData.distance = vertcat(resultData.distance, segmentData_accel.distance);
+
+resultData.velocity(end) = [];
+resultData.distance(end) = [];
 
 %% temp section
 

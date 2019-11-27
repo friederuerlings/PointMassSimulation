@@ -4,8 +4,7 @@ function [segmentData] = clearDouble(segmentData)
 % mit doppelten x Werten kann nicht interpoliert werden
 
 deltad = diff(segmentData.distance);
-deltav = diff(segmentData.velocity);
-logicDiff = deltad ~= 0 & deltav ~= 0;
+logicDiff = deltad ~= 0;
 
 logicDiff = logical(logicDiff);
 

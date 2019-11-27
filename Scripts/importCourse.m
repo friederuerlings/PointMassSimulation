@@ -6,8 +6,8 @@ opts.VariableTypes = ["double", "double"];
 opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
-course = readtable("C:\Users\Frieder Uerlings\Desktop\PointMassSimulation\Kurs\fsg_track_1m.csv.1", opts);
-% course = readtable("C:\Users\fried\Desktop\PointMassSimulation\Kurs\fsg_track_1m.csv.1", opts);
+% course = readtable("C:\Users\Frieder Uerlings\Desktop\PointMassSimulation\Kurs\fsg_track_1m.csv.1", opts);
+course = readtable("C:\Users\fried\Desktop\PointMassSimulation\Kurs\fsg_track_1m.csv.1", opts);
 course = table2array(course);
 clear opts
 

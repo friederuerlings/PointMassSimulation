@@ -1,8 +1,8 @@
-clear segmentData
+ clear segmentData
 warning off MATLAB:polyfit:RepeatedPointsOrRescale
 brakePt = [];
 brakePts = [];
-resultData.velocity = []; resultData.distance = []; resultData.tout = [];
+resultData.velocity = []; resultData.distance = []; resultData.tout = 0;
 
 
 %Apex Velocity Backup 
@@ -29,8 +29,8 @@ for n = 1:1:length(flippedLocs)-1
     stoppingDistance = flippedLocs(n+1) - 1;
        
     segmentData{length(apexData.locs)-n,1} = sim('segmentCalcNeg');
-    segmentData{length(apexData.locs)-n,1} = clearDouble(segmentData{length(apexData.locs)-n,1});
-    segmentData{length(apexData.locs)-n,1} = cutSegment(currentDistance,stoppingDistance,segmentData{length(apexData.locs)-n,1});
+%     segmentData{length(apexData.locs)-n,1} = clearDouble(segmentData{length(apexData.locs)-n,1});
+%     segmentData{length(apexData.locs)-n,1} = cutSegment(currentDistance,stoppingDistance,segmentData{length(apexData.locs)-n,1});
     
     % Velocity überschreiben
     if max(segmentData{length(apexData.locs)-n,1}.velocity) < flippedVel(n+1)
@@ -68,27 +68,31 @@ for n = 1:1:length(apexData.locs)-1
     stoppingDistance = apexData.locs(n+1,1) - 1;
     
     segmentData{n,2} = sim('segmentCalcPos');
-%     segmentData{n,2} = clearDouble(segmentData{n,2});
-%     segmentData{n,2} = cutSegment(currentDistance, stoppingDistance, segmentData{n,2});  
-    
-    % Polynom anlegen
-    segmentData{n,2}.vPolyFit = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 7);
-    segmentData{n,2}.vPolyVal = polyval(segmentData{n,2}.vPolyFit, segmentData{n,2}.distance);
-    
-    segmentData{n,1}.vPolyFit = polyfit(segmentData{n,1}.distance, segmentData{n,1}.velocity, 7);
-    segmentData{n,1}.vPolyVal = polyval(segmentData{n,1}.vPolyFit, segmentData{n,1}.distance);
-    
-    % Bremspunkte berechnen
-    brakePtFit = segmentData{n,2}.vPolyFit - segmentData{n,1}.vPolyFit;
-    brakePtMat = roots(brakePtFit);
-    logicMat = angle(brakePtMat) == 0 & brakePtMat < stoppingDistance & brakePtMat > currentDistance;
-    brakePt = round(brakePtMat(logicMat)*10)/10;
-    brakePts = [brakePts; brakePt];
     
     segmentData{n,2} = clearDouble(segmentData{n,2});
     segmentData{n,2} = cutSegment(currentDistance, stoppingDistance, segmentData{n,2});
-
     
+    segmentData{n,1} = clearDouble(segmentData{n,1});
+    segmentData{n,1} = cutSegment(currentDistance, stoppingDistance, segmentData{n,1});
+    
+    
+    % Polynom anlegen
+    %     segmentData{n,2}.vPolyFit = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 5);
+    %     segmentData{n,1}.vPolyFit = polyfit(segmentData{n,1}.distance, segmentData{n,1}.velocity, 5);
+    
+    %     segmentData{n,2}.vPolyFit = polyfit(segmentData{n,2}.distance, segmentData{n,2}.velocity, 5);
+    %
+    %     segmentData{n,2}.vPolyVal = polyval(segmentData{n,2}.vPolyFit, segmentData{n,2}.distance);
+    %     segmentData{n,1}.vPolyVal = polyval(segmentData{n,1}.vPolyFit, segmentData{n,1}.distance);
+    
+    % Bremspunkte berechnen
+    
+    brakePt = calcBrakePt(segmentData{n,2},segmentData{n,1});
+    brakePts = [brakePts; brakePt];
+    
+    if length(brakePt) > 1
+        error('More than one brake point')
+    end
     
     % max velocity überschreiben, falls velocity an nächstem Apex nicht
     % erreicht werden kann
@@ -98,18 +102,21 @@ for n = 1:1:length(apexData.locs)-1
     
     
     % erzeugt velocity vektor über distance
-    
     resultData = evaluateSegment(resultData, segmentData{n,2}, segmentData{n,1}, brakePt);
+    
+    if isempty(resultData.tout) == 1
+        error('no tout');
+    end
     
 end
 
-clear brakePtMat brakePt brakePtFit brakePts
+clear brakePtMat brakePt brakePtFit
 clear currentDistance apexVelocity stoppingDistance n 
 clear flippedCourse flippedLocs flippedVel
 
 %% Plot Segments
 
-for n = 39:1:39
+for n = 59:1:59
     
     figure(n)
     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
@@ -125,12 +132,37 @@ for n = 39:1:39
     hold off
 end
 
+disp('Lap Time')
+disp(resultData.tout)
+
 clear breakPtFit logicMat
 
 %% Plot Lap
-figure
+
+% Plot Velocity über Distance
+figure()
 plot(resultData.distance, resultData.velocity)
 grid
+title('Velocity - Distance')
+xlabel('Distance [m]')
+ylabel('Velocity [m/s]')
+
+% Plot Velocity über Kurs
+figure()
+interpVel = interp1(resultData.distance, resultData.velocity, distance);
+x = course(:,1)';
+y = course(:,2)';
+z = interpVel'.*3.6;
+C = interpVel'.*3.6;
+
+surface([x;x],[y;y],[z;z],[C;C],...
+    'FaceColor','none',...
+    'EdgeColor','interp', 'LineWidth', 3);
+title('Velocity - Course')
+colorbar
+set(gca,'XTickLabel',[],'YTickLabel',[]);
+
+clear x y z C n interpVel
 
 %% temp section
 

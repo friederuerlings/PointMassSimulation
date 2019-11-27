@@ -1,7 +1,7 @@
-function [brakePt] = calcBrakePt(segmentData_accel, segmentData_brake)
+% function [brakePt] = calcBrakePt(segmentData_accel, segmentData_brake)
 
-% segmentData_accel = segmentData{n,2};
-% segmentData_brake = segmentData{n,1};
+segmentData_accel = segmentData{n,2};
+segmentData_brake = segmentData{n,1};
 
 xtrastep = 0.2;
 
@@ -36,16 +36,16 @@ brakePtMat = roots(brakePtFit);
 logicMat = angle(brakePtMat) == 0 & brakePtMat < segmentData_accel.distance(end)+xtrastep & brakePtMat > segmentData_brake.distance(1)-xtrastep;
 brakePt = round(brakePtMat(logicMat)*10)/10;
 
-% disp(brakePt)
-% 
-% %% temp plot
-% 
-% figure(n)
-% plot([(segmentData_brake.distance(1)-xtrastep):0.1:(segmentData_accel.distance(end)+xtrastep)], segmentData_accel.vPolyVal, 'LineWidth', 2)
-% grid
-% hold on
-% plot([(segmentData_brake.distance(1)-xtrastep):0.1:(segmentData_accel.distance(end)+xtrastep)], segmentData_brake.vPolyVal, 'LineWidth', 2)
-% 
-% plot(segmentData_accel.distance, segmentData_accel.velocity)
-% plot(segmentData_brake.distance, segmentData_brake.velocity)
+disp(brakePt)
+
+%% temp plot
+
+figure(n)
+plot([(segmentData_brake.distance(1)-xtrastep):0.1:(segmentData_accel.distance(end)+xtrastep)], segmentData_accel.vPolyVal, 'LineWidth', 2)
+grid
+hold on
+plot([(segmentData_brake.distance(1)-xtrastep):0.1:(segmentData_accel.distance(end)+xtrastep)], segmentData_brake.vPolyVal, 'LineWidth', 2)
+
+plot(segmentData_accel.distance, segmentData_accel.velocity)
+plot(segmentData_brake.distance, segmentData_brake.velocity)
 

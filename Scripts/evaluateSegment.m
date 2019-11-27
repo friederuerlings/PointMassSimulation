@@ -25,10 +25,19 @@ end
 
 if isempty(brakePt) == 0
     
+    %     Falls Breakpoint direkt auf apex2 liegt
     if brakePt >= segmentData_accel.distance(end)
         resultData.velocity = vertcat(resultData.velocity, segmentData_accel.velocity);
         resultData.distance = vertcat(resultData.distance, segmentData_accel.distance);
         resultData.tout = resultData.tout + max(segmentData_accel.tout);
+        return
+    end
+    
+    %     Falls Breakpoint direkt auf apex1 liegt
+    if brakePt <= segmentData_brake.distance(1) 
+        resultData.velocity = vertcat(resultData.velocity, segmentData_brake.velocity);
+        resultData.distance = vertcat(resultData.distance, segmentData_brake.distance);
+        resultData.tout = resultData.tout + max(segmentData_brake.tout);
         return
     end
     

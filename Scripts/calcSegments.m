@@ -75,6 +75,10 @@ for n = 1:1:length(apexData.locs)-1
     end  
     
     resultData = evaluateSegment(resultData, segmentData{n,2}, segmentData{n,1});
+    
+    if isempty(resultData.tout) == 1
+        error('no tout')
+    end
 end
 
 clear currentDistance apexVelocity stoppingDistance n 
@@ -82,7 +86,7 @@ clear flippedCourse flippedLocs flippedVel
 
 %% Plot Segments
 
-% for n = 1:1:1
+% for n = 3:1:3
 %     figure(n)
 %     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
 %     hold on
@@ -104,27 +108,27 @@ disp(max(resultData.velocity)*3.6)
 disp('___________________')
 
 % Plot Velocity über Distance
-% figure()
-% plot(resultData.distance, resultData.velocity)
-% grid
-% title('Velocity - Distance')
-% xlabel('Distance [m]')
-% ylabel('Velocity [m/s]')
-% 
-% % Plot Velocity über Kurs
-% figure()
-% interpVel = interp1(resultData.distance, resultData.velocity, distance);
-% x = course(:,1)';
-% y = course(:,2)';
-% z = interpVel'.*3.6;
-% C = interpVel'.*3.6;
-% 
-% surface([x;x],[y;y],[z;z],[C;C],...
-%     'FaceColor','none',...
-%     'EdgeColor','interp', 'LineWidth', 3);
-% title('Velocity - Course')
-% colorbar
-% set(gca,'XTickLabel',[],'YTickLabel',[]);
+figure()
+plot(resultData.distance, resultData.velocity)
+grid
+title('Velocity - Distance')
+xlabel('Distance [m]')
+ylabel('Velocity [m/s]')
+
+% Plot Velocity über Kurs
+figure()
+interpVel = interp1(resultData.distance, resultData.velocity, distance);
+x = course(:,1)';
+y = course(:,2)';
+z = interpVel'.*3.6;
+C = interpVel'.*3.6;
+
+surface([x;x],[y;y],[z;z],[C;C],...
+    'FaceColor','none',...
+    'EdgeColor','interp', 'LineWidth', 3);
+title('Velocity - Course')
+colorbar
+set(gca,'XTickLabel',[],'YTickLabel',[]);
 
 clear x y z C n interpVel
 

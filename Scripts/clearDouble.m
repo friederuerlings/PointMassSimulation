@@ -12,3 +12,5 @@ segmentData.tout = segmentData.tout(logicDiff);
 segmentData.velocity = segmentData.velocity(logicDiff);
 segmentData.distance = segmentData.distance(logicDiff);
 segmentData.a_x = segmentData.a_x(logicDiff);
+segmentData.a_y = segmentData.a_y(logicDiff);
+segmentData.radius = segmentData.radius(logicDiff);

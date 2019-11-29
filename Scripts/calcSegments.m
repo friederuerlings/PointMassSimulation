@@ -1,7 +1,8 @@
 clear segmentData
 warning off MATLAB:polyfit:RepeatedPointsOrRescale
 warning off 'Simulink:blocks:SquareRootOfNegative'
-resultData.velocity = []; resultData.distance = []; resultData.tout = 0;
+resultData.velocity = []; resultData.distance = []; resultData.tout = 0; ...
+    resultData.a_x = []; resultData.a_y = []; resultData.radius = [];
 
 %Apex Velocity Backup 
 apexData.velocity(:,2) = apexData.velocity(:,1);
@@ -16,7 +17,7 @@ flippedVel = flip(apexData.velocity(:,1));
 
 load_system ('segmentCalcNeg');
 set_param('segmentCalcNeg','FastRestart','off')
-% set_param('segmentCalcNeg','StartTime','0','StopTime','inf','FixedStep','1e-2');
+% set_param('segmentCalcNeg','StartTime','0','StopTime','inf','FixedStep','1e-3');
 set_param('segmentCalcNeg','StartTime','0','StopTime','inf','MinStep','auto','MaxStep','1e-3');
 set_param('segmentCalcNeg','FastRestart','on');
 
@@ -37,6 +38,8 @@ for n = 1:1:length(flippedLocs)-1
     segmentData{length(apexData.locs)-n,1}.distance = flip((TrackLength) - segmentData{length(apexData.locs)-n,1}.distance);
     segmentData{length(apexData.locs)-n,1}.velocity = flip(segmentData{length(apexData.locs)-n,1}.velocity);
     segmentData{length(apexData.locs)-n,1}.a_x = flip(segmentData{length(apexData.locs)-n,1}.a_x);
+    segmentData{length(apexData.locs)-n,1}.a_y = flip(segmentData{length(apexData.locs)-n,1}.a_y);
+    segmentData{length(apexData.locs)-n,1}.radius = flip(segmentData{length(apexData.locs)-n,1}.radius);
     segmentData{length(apexData.locs)-n,1}.tout = flip(segmentData{length(apexData.locs)-n,1}.tout);
     
 end
@@ -48,7 +51,7 @@ apexData.velocity(:,2) = flip(flippedVel);
 
 load_system ('segmentCalcPos');
 set_param('segmentCalcPos','FastRestart','off');
-% set_param('segmentCalcPos','StartTime','0','StopTime','inf','FixedStep','1e-2');
+% set_param('segmentCalcPos','StartTime','0','StopTime','inf','FixedStep','1e-3');
 set_param('segmentCalcPos','StartTime','0','StopTime','inf','MinStep','auto','MaxStep','1e-3');
 set_param('segmentCalcPos','FastRestart','on');
 
@@ -86,17 +89,27 @@ clear flippedCourse flippedLocs flippedVel
 
 %% Plot Segments
 
-% for n = 3:1:3
-%     figure(n)
-%     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
-%     hold on
-%     grid
-%     %         plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
-%     plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
-%     %         plot(segmentData{n,1}.distance, segmentData{n,1}.a_x
-%     hold off
-% end
+for n = 29:1:31
+    figure(n)
+    plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
+    hold on
+    grid
+    %         plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
+    plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
+    %         plot(segmentData{n,1}.distance, segmentData{n,1}.a_x
+    hold off
+    
+   
+end
 
+%% Plot Segment Radius
+
+for n = 29:1:31
+    
+    figure(100 + n)
+    plot(1:1:length(segments{n}), segments{n})
+    grid
+end
 
 %% Plot Lap
 
@@ -108,15 +121,15 @@ disp(max(resultData.velocity)*3.6)
 disp('___________________')
 
 % Plot Velocity über Distance
-figure()
-plot(resultData.distance, resultData.velocity)
-grid
-title('Velocity - Distance')
-xlabel('Distance [m]')
-ylabel('Velocity [m/s]')
+% figure('Name', 'Velocity - Distance')
+% plot(resultData.distance, resultData.velocity)
+% grid
+% title('Velocity - Distance')
+% xlabel('Distance [m]')
+% ylabel('Velocity [m/s]')
 
 % Plot Velocity über Kurs
-figure()
+figure('Name', 'Velocity - Course')
 interpVel = interp1(resultData.distance, resultData.velocity, distance);
 x = course(:,1)';
 y = course(:,2)';

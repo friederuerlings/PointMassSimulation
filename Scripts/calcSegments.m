@@ -8,7 +8,7 @@ resultData.velocity = []; resultData.distance = []; resultData.tout = 0; ...
 apexData.velocity(:,2) = apexData.velocity(:,1);
 
 %Track umdrehen für Braking Simulation
-flippedLocs = (TrackLength + 2) - flip(apexData.locs(:,1));
+flippedLocs = (length(course(:,3)) + 1) - flip(apexData.locs(:,1));
 flippedCourse = flip(course);
 flippedVel = flip(apexData.velocity(:,1));
 
@@ -23,9 +23,9 @@ set_param('segmentCalcNeg','FastRestart','on');
 
 for n = 1:1:length(flippedLocs)-1
     
-    currentDistance = flippedLocs(n) - 1;
+    currentDistance = (flippedLocs(n) - 1) * init.ptDistance;
     apexVelocity = flippedVel(n);
-    stoppingDistance = flippedLocs(n+1) - 1;
+    stoppingDistance = (flippedLocs(n+1) - 1) * init.ptDistance;
        
     segmentData{length(apexData.locs)-n,1} = sim('segmentCalcNeg');
     
@@ -57,9 +57,9 @@ set_param('segmentCalcPos','FastRestart','on');
 
 for n = 1:1:length(apexData.locs)-1
     
-    currentDistance = apexData.locs(n,1) - 1;
+    currentDistance = (apexData.locs(n,1) - 1) * init.ptDistance;
     apexVelocity = apexData.velocity(n,2);
-    stoppingDistance = apexData.locs(n+1,1) - 1;
+    stoppingDistance = (apexData.locs(n+1,1) - 1) * init.ptDistance;
     
     segmentData{n,2} = sim('segmentCalcPos');
     
@@ -89,22 +89,20 @@ clear flippedCourse flippedLocs flippedVel
 
 %% Plot Segments
 
-for n = 29:1:31
+for n = 1:1:1
     figure(n)
     plot(segmentData{n,2}.distance, segmentData{n,2}.velocity)
     hold on
     grid
-    %         plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
+%             plot(segmentData{n,2}.distance, segmentData{n,2}.a_x)
     plot(segmentData{n,1}.distance, segmentData{n,1}.velocity)
-    %         plot(segmentData{n,1}.distance, segmentData{n,1}.a_x
+%             plot(segmentData{n,1}.distance, segmentData{n,1}.a_x
     hold off
-    
-   
 end
 
 %% Plot Segment Radius
 
-for n = 29:1:31
+for n = 1:1:1
     
     figure(100 + n)
     plot(1:1:length(segments{n}), segments{n})
@@ -121,12 +119,12 @@ disp(max(resultData.velocity)*3.6)
 disp('___________________')
 
 % Plot Velocity über Distance
-% figure('Name', 'Velocity - Distance')
-% plot(resultData.distance, resultData.velocity)
-% grid
-% title('Velocity - Distance')
-% xlabel('Distance [m]')
-% ylabel('Velocity [m/s]')
+figure('Name', 'Velocity - Distance')
+plot(resultData.distance, resultData.velocity)
+grid
+title('Velocity - Distance')
+xlabel('Distance [m]')
+ylabel('Velocity [m/s]')
 
 % Plot Velocity über Kurs
 figure('Name', 'Velocity - Course')

@@ -2,11 +2,10 @@
 
 LapTime = [];
 
-for m = 120:20:260
-    init.m = m;
+for r = 28:1:32
+    init.DRS_radius   = r;
     
-    calcggV
-    calcSegments
+    Initialisierung
     
     LapTime = [LapTime; resultData.tout];
     
@@ -15,10 +14,10 @@ end
 %% Plotten
 
 figure()
-plot([120-70:20:260-70], LapTime, 'LineWidth', 2)
+plot([28:1:32], LapTime, 'LineWidth', 2)
 grid
-title('Mass - LapTime (Driver Weight 70kg)')
-xlabel('Mass [kg]')
+title('DRS Sensitivity')
+xlabel('DRS Active Radius')
 ylabel('LapTime [sec]')
     
     

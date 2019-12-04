@@ -54,14 +54,14 @@ course = addRadius(course);
 [apexData, segments] = maxVelocityatApex(course, vRLookUp);
 
 %% Plottet das ggV-Diagramm
-figure()
-plot3(ggV.Data_pos(:,1),ggV.Data_pos(:,2),ggV.Data_pos(:,3)*3.6,'*')
-hold on
-plot3(ggV.Data_neg(:,1),ggV.Data_neg(:,2),ggV.Data_neg(:,3)*3.6,'*')
-hold off
-grid
-title('ggV-Diagram')
-xlabel('a_x [m/s²]')
-ylabel('a_y [m/s²]')
-zlabel('velocity [km/h]')
+% figure()
+% plot3(ggV.Data_pos(:,1),ggV.Data_pos(:,2),ggV.Data_pos(:,3)*3.6,'*')
+% hold on
+% plot3(ggV.Data_neg(:,1),ggV.Data_neg(:,2),ggV.Data_neg(:,3)*3.6,'*')
+% hold off
+% grid
+% title('ggV-Diagram')
+% xlabel('a_x [m/s²]')
+% ylabel('a_y [m/s²]')
+% zlabel('velocity [km/h]')
 
